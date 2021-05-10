@@ -7,6 +7,13 @@ import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 
 function Sidebar() {
+
+   const createChat = () => {
+      const input = prompt('please enter an email address for the user you wish to chat with')
+
+      if (!input) return null;
+   }
+
     return (
         <Container>
             <Header>
@@ -28,7 +35,7 @@ function Sidebar() {
                 <SearchInput placeholder='search chats....' />
             </Search>
 
-            <SidebarButton>
+            <SidebarButton onClick={createChat} >
                 Start a new chat
             </SidebarButton>
         </Container>
