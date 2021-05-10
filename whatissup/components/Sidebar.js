@@ -79,7 +79,7 @@ const SearchInput = styled.input `
  border: none;
  flex: 1;
 
-`
+` 
 
 const SidebarButton = styled(Button)`
   width: 100%;
