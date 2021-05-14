@@ -1,27 +1,14 @@
+import { auth, db } from '../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import Login from './login'
 
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-`
+ function App({ Component, pageProps }) {
+  const [user] = useAuthState(auth) 
 
-const theme = {
-  colors: {
-    primary: '#0070f3',
-  },
+  if (!user) return <Login />
+  return <Component {...pageProps} />
+  
 }
 
-export default function App({ Component, pageProps }) {
-  return (
-    <>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
-  )
-}
+export default App
