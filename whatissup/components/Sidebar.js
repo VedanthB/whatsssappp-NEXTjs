@@ -5,6 +5,8 @@ import ChatIcon from '@material-ui/icons/Chat';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { auth } from '../firebase';
 
 function Sidebar() {
 
@@ -26,6 +28,10 @@ function Sidebar() {
 
                     <IconButton>
                         <MoreVertIcon />
+                    </IconButton>
+
+                    <IconButton>
+                        <ExitToAppIcon onClick={() => auth.signOut()} />
                     </IconButton>
                 </IconContainer>
             </Header>
