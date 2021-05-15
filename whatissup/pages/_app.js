@@ -4,6 +4,7 @@ import Login from './login'
 import Loading from '../components/Loading'
 import { useEffect } from 'react'
 import firebase from "firebase";
+import "../styles/globals.css";
 
  function App({ Component, pageProps }) {
   const [user, loading] = useAuthState(auth) 

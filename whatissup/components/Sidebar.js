@@ -84,20 +84,33 @@ export default Sidebar
 
 
 const Container = styled.div `
- 
+  flex: 0.45;
+  border-right: 0.5px solid #262d31;
+  height: 100vh;
+  min-width: 350px;
+  max-width: 450px;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
 `
 
 const Header = styled.div `
-   display: flex;
-   position: sticky;
-   top: 0;
-   background-color: white;
-   z-index: 1;
-   justify-content: space-between;
-   align-items: center;
-   padding: 15px;
-   height: 80px;
-   border-bottom: 3px solid whitesmoke;
+  display: flex;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  height: 80px;
+  background-color: #2a2f32;
+
+ 
 `
 
 const UserAvatar = styled(Avatar)  `
@@ -109,29 +122,40 @@ const UserAvatar = styled(Avatar)  `
 `
 
 const IconContainer = styled.div ` 
- 
+     .MuiSvgIcon-root {
+     color: whitesmoke;
+   }
 `
 
 const Search = styled.div `
- display: flex;
- align-items: center;
- padding: 20px;
- border-radius: 2px;
+   display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background-color: #32373a;
+  padding: 10px;
+  width: 340px;
 `
 
 const SearchInput = styled.input `
- outline-width: 0;
- border: none;
- flex: 1;
-
+  outline-width: 0;
+  border: none;
+  flex: 1;
+  margin-left: 10px;
+  background-color: transparent;
+  color: white;
 ` 
 
 const SidebarButton = styled(Button)`
-  width: 100%;
-
+   width: 100%;
   &&& {
-  border-top: 2px solid whitesmoke;
-  border-bottom: 2px solid whitesmoke;
+    border-top: 0.5px solid #262d31;
+    border-bottom: 0.5px solid #262d31;
+    background-color: #131c21;
+    color: white;
+    border-radius: 0px !important;
   }
-
+  :hover {
+    opacity: 0.8;
+  }
 `
