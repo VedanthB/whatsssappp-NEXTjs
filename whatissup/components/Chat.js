@@ -4,6 +4,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components'
 import { auth, db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
+import { useRouter } from 'next/router';
 
 function Chat({id, users}) { 
   console.log(id, users)
@@ -14,16 +15,21 @@ function Chat({id, users}) {
   //cross refrencing the users collection on the db with the email of the person who is the recipient 
   const [recipientSnapshot] = useCollection(db.collection("users").where("email", "==", getRecipientEmail(users, user)));
 
-
+ 
   // find the first element
   const recipient = recipientSnapshot?.docs?.[0]?.data();
 
+  const router = useRouter();
+
+  const enterChat = () => {
+    router.push(`/chat/${id}`)
+  }
 
     return (
-        <Container>
+        <Container onClick={enterChat} >
             {recipient ? (
               // if the recipient is available then 
-               <UserAvatar src={recipient?.photoURL} />
+               <UserAvatar src={recipient?.photoURL} /> 
               ) : (
                 // if its not avavilable then just get the email
                <UserAvatar>{recipientEmail[0]}</UserAvatar>
