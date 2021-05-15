@@ -1,11 +1,34 @@
 import { Avatar } from '@material-ui/core';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components'
+import { auth, db } from '../firebase';
+import getRecipientEmail from '../utils/getRecipientEmail';
 
-function Chat({id, users}) {
+function Chat({id, users}) { 
+  console.log(id, users)
+
+  const [user] = useAuthState(auth)
+  const recipientEmail = getRecipientEmail(users, user)
+
+  //cross refrencing the users collection on the db with the email of the person who is the recipient 
+  const [recipientSnapshot] = useCollection(db.collection("users").where("email", "==", getRecipientEmail(users, user)));
+
+
+  // find the first element
+  const recipient = recipientSnapshot?.docs?.[0]?.data();
+
+
     return (
         <Container>
-            <UserAvatar />
-            <p> email </p>
+            {recipient ? (
+              // if the recipient is available then 
+               <UserAvatar src={recipient?.photoURL} />
+              ) : (
+                // if its not avavilable then just get the email
+               <UserAvatar>{recipientEmail[0]}</UserAvatar>
+             )}
+            <p>{ recipientEmail } </p>
         </Container>
     )
 }
