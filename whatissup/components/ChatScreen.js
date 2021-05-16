@@ -8,15 +8,16 @@ import getRecipientEmail from "../utils/getRecipientEmail";
 import firebase from "firebase";
 import { Avatar, IconButton } from "@material-ui/core";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Message from "./Message";
 import MicIcon from "@material-ui/icons/Mic";
+import TimeAgo from 'timeago-react'
 
-function ChatScreen() {
+function ChatScreen({chat, messages}) {
     const [user] = useAuthState(auth)
     const router = useRouter();
+    const endOfMessagesRef = useRef(null);
     const [input, setInput] = useState("");
     const [messagesSnapshot] = useCollection(
      db
@@ -25,7 +26,8 @@ function ChatScreen() {
       .collection('messages')
       .orderBy('timestamp', 'desc')
       )
-
+      
+    const [recipientSnapshot] = useCollection(db.collection('users').where('email', '==' , getRecipientEmail(chat.users, user)))   
     const showMessages= () => {
         if (messagesSnapshot) {
             return messagesSnapshot.docs.map(message => (
@@ -43,7 +45,8 @@ function ChatScreen() {
 
     const sendMessage = (e) => {
         e.preventDefault();
-    
+
+        // everytime the user sends message update last seen  // 
         db.collection("users").doc(user.uid).set(
           {
             lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
@@ -72,15 +75,31 @@ function ChatScreen() {
     });
   };
 
-
+  const recipient = recipientSnapshot?.docs?.[0]?.data();
+   const recipientEmail = getRecipientEmail(chat.users, user)
     return (
         <Container>
           <Header>
-              <Avatar />
+              {recipient ? (
+                  <Avatar src={recipient?.photoURL} />
+              ): (
+                  <Avatar>{recipientEmail[0]}</Avatar>
+              )}
 
               <HeaderInformation>
-                  <h3> rec email</h3>
-                  <p> last seen </p>
+                  <h3> {recipientEmail} </h3>
+                  {recipientSnapshot ? (
+                      <p>
+                        Last active:{` `}
+                         {recipient?.lastSeen?.toDate() ? (
+                             <TimeAgo datetime={recipient?.lastSeen?.toDate()} />
+                         ) : (
+                         "Unavailable"
+                           )}
+                      </p>
+                     ) : (
+                     <p>Loading Last active...</p>
+                   )}
               </HeaderInformation>
 
               <HeaderIcons>
@@ -97,7 +116,7 @@ function ChatScreen() {
               {/* first, we'll show the data from the server side and then when the user starts chatting it'll  establish an real-time connection*/}
               {showMessages()}  
 
-              <EndOfMessage />
+              <EndOfMessage ref={endOfMessagesRef} />
           </MessageContainer>
 
         <InputContainer>
