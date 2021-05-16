@@ -11,10 +11,13 @@ import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import Message from "./Message";
+import MicIcon from "@material-ui/icons/Mic";
 
 function ChatScreen() {
     const [user] = useAuthState(auth)
     const router = useRouter();
+    const [input, setInput] = useState("");
     const [messagesSnapshot] = useCollection(
      db
       .collection('chats')
@@ -37,6 +40,37 @@ function ChatScreen() {
             ))
          }
     }
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+    
+        db.collection("users").doc(user.uid).set(
+          {
+            lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
+    
+        db.collection("chats").doc(router.query.id).collection("messages").add({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          message: input,
+          user: user.email,
+          photoURL: user.photoURL,
+        });
+    
+        setInput("");
+    
+        ScrollToBottom();
+      };
+
+
+
+  const ScrollToBottom = () => {
+    endOfMessagesRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
 
     return (
@@ -61,10 +95,27 @@ function ChatScreen() {
 
           <MessageContainer>
               {/* first, we'll show the data from the server side and then when the user starts chatting it'll  establish an real-time connection*/}
-              {/* show messages */}  
+              {showMessages()}  
 
               <EndOfMessage />
           </MessageContainer>
+
+        <InputContainer>
+           <InsertEmoticonIcon style={{ color: "#B1B3B5" }} />
+           <Input
+             value={input}
+             onChange={(e) => setInput(e.target.value)}
+             type="text"
+           />
+
+           <button hidden disabled={!input} type="submit" onClick={sendMessage}>
+              Send Message
+            </button>
+
+            <MicIcon style={{ color: "#B1B3B5" }} />
+         </InputContainer>
+
+
         </Container>
         
     )
