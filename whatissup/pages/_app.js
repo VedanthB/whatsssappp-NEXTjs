@@ -1,27 +1,34 @@
+import { auth, db } from '../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import Login from './login'
+import Loading from '../components/Loading'
+import { useEffect } from 'react'
+import firebase from "firebase";
+import "../styles/globals.css";
 
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
+ function App({ Component, pageProps }) {
+  const [user, loading] = useAuthState(auth) 
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-`
+  // this is to get the user info after logged in so we can use it later in the app
+  useEffect(() => {
+    if (user) {
+      db.collection("users").doc(user.uid).set(
+        {
+          email: user.email,
+          name: user.displayName,
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+          photoURL: user.photoURL,
+        },
+        { merge: true }
+      );
+    }
+  }, [user]);
 
-const theme = {
-  colors: {
-    primary: '#0070f3',
-  },
+
+  if (loading) return <Loading />
+  if (!user) return <Login />
+  return <Component {...pageProps} />
+  
 }
 
-export default function App({ Component, pageProps }) {
-  return (
-    <>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
-  )
-}
+export default App
