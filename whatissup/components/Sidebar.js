@@ -46,7 +46,7 @@ function Sidebar() {
     return (
         <Container>
             <Header>
-                <UserAvatar />
+                <UserAvatar src={user.photoURL} />
 
                 <IconContainer>
                     <IconButton>
