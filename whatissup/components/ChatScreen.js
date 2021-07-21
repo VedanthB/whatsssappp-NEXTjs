@@ -120,7 +120,6 @@ function ChatScreen({chat, messages}) {
           </MessageContainer>
 
         <InputContainer>
-        <form onSubmit={sendMessage} >
            <InsertEmoticonIcon style={{ color: "#B1B3B5" }} />
            <Input
              value={input}
@@ -128,12 +127,12 @@ function ChatScreen({chat, messages}) {
              type="text"
            />
 
-           <button hidden disabled={!input} type="submit"  >
+           <button hidden disabled={!input} type="submit" onClick={sendMessage}  >
               Send Message
             </button>
 
             <MicIcon style={{ color: "#B1B3B5" }} />
-        </form>
+       
          </InputContainer>
         </Container>
         
